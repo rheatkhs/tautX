@@ -13,40 +13,34 @@ class LinkController extends Controller
     {
         $request->validate([
             'url' => 'required|url',
+            'length' => 'required|integer|min:5|max:1000', // User must enter a length
         ]);
 
-        // Check if the short URL already exists in the database
-        $existingLink = Link::where('short_url', $request->url)->first();
+        $serverUrl = url('/');
 
-        if ($existingLink) {
-            // If it exists, update the expanded URL with a new random string
-            $randomString = Str::random(100);
-            $serverUrl = url('/'); // e.g., "http://127.0.0.1:8000"
-            $expandedUrl = $serverUrl . '/' . $randomString;
+        // Use user-defined length (default 100 if empty)
+        $length = $request->length ?? 100;
 
-            $existingLink->update([
-                'expanded_url' => $expandedUrl,
-            ]);
+        // Generate random string
+        $randomString = Str::random($length);
+        $expandedUrl = $serverUrl . '/' . $randomString;
+
+        // Check if the short URL already exists
+        $link = Link::where('short_url', $request->url)->first();
+
+        if ($link) {
+            $link->expanded_url = $expandedUrl;
+            $link->save();
         } else {
-            // Generate a new secure expanded URL for a new entry
-            $randomString = Str::random(100);
-            $serverUrl = url('/');
-            $expandedUrl = $serverUrl . '/' . $randomString;
-
-            // Generate description (optional)
-            $description = "Generated secure URL using a 100-character random string.";
-
-            // Save new link entry
-            $existingLink = Link::create([
+            $link = Link::create([
                 'short_url' => $request->url,
                 'expanded_url' => $expandedUrl,
-                'description' => $description,
+                'description' => "Generated secure URL with $length-character string.",
             ]);
         }
 
-        // Return response via Inertia
         return Inertia::render('home', [
-            'expandedUrl' => $existingLink->expanded_url, // Pass the updated/generated URL to the frontend
+            'expandedUrl' => $link->expanded_url,
         ]);
     }
     public function redirect($code)
