@@ -106,10 +106,14 @@ export default function Home({ expandedUrl = '' }: HomeProps) {
                         {/* Submit Button */}
                         <motion.button
                             type="submit"
-                            disabled={processing}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.97 }}
-                            className="flex items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-orange-600 disabled:opacity-50 sm:text-base"
+                            disabled={processing || !data.url.trim()} // 🚀 Disable if input is empty
+                            whileHover={{ scale: !data.url.trim() ? 1 : 1.05 }} // Prevent hover effect when disabled
+                            whileTap={{ scale: !data.url.trim() ? 1 : 0.97 }}
+                            className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold shadow-lg transition-all sm:text-base ${
+                                !data.url.trim()
+                                    ? 'cursor-not-allowed bg-gray-500' // 🔴 Disabled style
+                                    : 'bg-orange-500 text-white hover:bg-orange-600' // ✅ Active style
+                            }`}
                         >
                             {processing ? 'Generating...' : 'Generate'}
                             <RefreshCcw size={20} className={processing ? 'animate-spin' : ''} />
