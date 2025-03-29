@@ -94,12 +94,16 @@ export default function Home({ expandedUrl = '' }: HomeProps) {
                         <div className="flex flex-col items-center gap-3 text-white sm:flex-row">
                             <label className="text-sm font-semibold sm:text-base">Custom Length:</label>
                             <motion.input
-                                type="number"
-                                min="5"
-                                max="1000"
+                                type="text" // Changed to text to remove arrows
+                                inputMode="numeric" // Ensures only numbers can be entered
+                                pattern="[0-9]*" // Blocks non-numeric input
+                                placeholder="Enter length (5 - 1000)"
                                 value={data.length}
-                                onChange={(e) => setData('length', Math.min(1000, Math.max(5, Number(e.target.value))))}
-                                className="w-24 rounded-lg bg-gray-800 p-3 text-center text-white transition focus:ring-2 focus:ring-orange-500 focus:outline-none sm:text-lg"
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/, ''); // Prevent non-numeric characters
+                                    setData('length', Math.min(1000, Math.max(5, Number(value || 100))));
+                                }}
+                                className="w-28 rounded-lg bg-gray-800 p-3 text-center text-white transition focus:ring-2 focus:ring-orange-500 focus:outline-none sm:text-lg"
                             />
                         </div>
 
