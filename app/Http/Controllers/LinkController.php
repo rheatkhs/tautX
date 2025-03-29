@@ -30,6 +30,7 @@ class LinkController extends Controller
 
         if ($link) {
             $link->expanded_url = $expandedUrl;
+            $link->description = "Generated secure URL with $length-character string.";
             $link->save();
         } else {
             $link = Link::create([

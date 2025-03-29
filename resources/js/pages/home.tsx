@@ -59,7 +59,7 @@ export default function Home({ expandedUrl = '' }: HomeProps) {
 
     return (
         <>
-            <Head title="Expand Your URLs" />
+            <Head title="Links in a Snap" />
             <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-800 to-black px-4 py-8 font-sans text-white sm:px-6">
                 {/* Title */}
                 <motion.h1
